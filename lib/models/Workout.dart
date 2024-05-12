@@ -15,12 +15,14 @@ class Workout {
   String name;
   String description;
   int user;
+  String workoutImageUrl;
 
   Workout({
     required this.id,
     required this.name,
     required this.description,
     required this.user,
+    required this.workoutImageUrl,
   });
 
   factory Workout.fromMap(Map<String, dynamic> json) => Workout(
@@ -28,6 +30,7 @@ class Workout {
         name: json["name"],
         description: json["description"],
         user: json["user"],
+        workoutImageUrl: json["workout_image_url"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -35,5 +38,6 @@ class Workout {
         "name": name,
         "description": description,
         "user": user,
+        "workout_image_url": workoutImageUrl,
       };
 }

@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'Exercise.dart';
+
 List<WorkoutExercise> workoutExerciseFromMap(String str) =>
     List<WorkoutExercise>.from(
         json.decode(str).map((x) => WorkoutExercise.fromMap(x)));
@@ -14,31 +16,35 @@ String workoutExerciseToMap(List<WorkoutExercise> data) =>
 class WorkoutExercise {
   int id;
   int workout;
-  int exercise;
   int sets;
   int reps;
+  int weight;
+  Exercise exerciseData;
 
   WorkoutExercise({
     required this.id,
     required this.workout,
-    required this.exercise,
     required this.sets,
     required this.reps,
+    required this.weight,
+    required this.exerciseData,
   });
 
   factory WorkoutExercise.fromMap(Map<String, dynamic> json) => WorkoutExercise(
         id: json["id"],
         workout: json["workout"],
-        exercise: json["exercise"],
         sets: json["sets"],
         reps: json["reps"],
+        weight: json["weight"],
+        exerciseData: Exercise.fromMap(json["exercise_data"]),
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
         "workout": workout,
-        "exercise": exercise,
         "sets": sets,
         "reps": reps,
+        "weight": weight,
+        "exercise_data": exerciseData.toMap(),
       };
 }

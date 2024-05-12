@@ -2,61 +2,56 @@ import 'package:flutter/material.dart';
 
 import '../screens/WorkoutDetailScreen.dart';
 
-class WorkoutListTile extends StatefulWidget {
+class WorkoutListTile extends StatelessWidget {
   final int id;
   final String name;
   final String description;
+  final String imageUrl;
 
   const WorkoutListTile({
-    super.key,
+    Key? key,
     required this.id,
     required this.name,
     required this.description,
-  });
+    required this.imageUrl,
+  }) : super(key: key);
 
-  @override
-  State<WorkoutListTile> createState() => _WorkoutListTileState();
-}
-
-class _WorkoutListTileState extends State<WorkoutListTile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12,
-                blurRadius: 0.2,
-                offset: Offset(0.3, 0.5),
-                spreadRadius: 0.5)
-          ]),
+    return Card(
+      elevation: 2.0,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
       child: ListTile(
-        title: Text(widget.name,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        subtitle: Text(widget.description,
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal)),
-        trailing: Container(
-          decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: InkWell(
-            child: Icon(
-              Icons.check,
-              color: Colors.white,
+        onTap: () {
+          // Here you can define the navigation or any other interaction
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => WorkoutDetailScreen(workoutId: id),
             ),
-            onTap: () {
-              print("Workout List Tile Workout Id: ${widget.id}");
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          WorkoutDetailScreen(workoutId: widget.id)));
-            },
-          ),
+          );
+        },
+        contentPadding: const EdgeInsets.all(10.0),
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: imageUrl != ''
+              ? Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: 50,
+                  height: 50,
+                )
+              : Text(name[0].toUpperCase(),
+                  style: TextStyle(color: Colors.white)),
         ),
+        title: Text(name, style: Theme.of(context).textTheme.headline6),
+        subtitle: Text(
+          description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.subtitle2,
+        ),
+        trailing:
+            Icon(Icons.chevron_right, color: Theme.of(context).primaryColor),
       ),
     );
   }
