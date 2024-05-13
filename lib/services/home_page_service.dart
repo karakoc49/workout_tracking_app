@@ -6,17 +6,15 @@ class HomePageService {
   List<Workout>? workouts;
   bool isLoaded = false;
 
-  Future<void> getData() async {
+  Future<List<Workout>> getData() async {
     try {
       workouts = await apiService.getWorkouts();
-      if (workouts != null) {
-        isLoaded = true;
-      }
+      isLoaded = true;
+      return workouts ?? [];
     } catch (e) {
-      if (workouts != null) {
-        isLoaded = false;
-      }
-      // Consider handling errors and showing an appropriate message or UI
+      isLoaded = false;
+      // Handle error or throw it to be caught by the caller
+      throw e;
     }
   }
 }

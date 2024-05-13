@@ -15,6 +15,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      shadowColor: Colors.lightBlue,
       elevation: 0.0,
       backgroundColor: widget.backgroundColor,
       actions: <Widget>[
