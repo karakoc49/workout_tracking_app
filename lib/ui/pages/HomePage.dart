@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracking_app/services/home_page_service.dart';
-import 'package:workout_tracking_app/ui/screens/test.dart';
 import 'package:workout_tracking_app/ui/widgets/AppBar.dart';
-import 'package:workout_tracking_app/ui/widgets/BottomNavBar.dart';
 import 'package:workout_tracking_app/ui/widgets/WorkoutListTile.dart';
 import 'package:workout_tracking_app/utils/constants.dart';
+
+import '../../models/Workout.dart';
+import '../screens/test.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,12 +17,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final HomePageService homePageService = HomePageService();
   var isLoaded = false;
+  List<Workout>? workouts;
 
   @override
   void initState() {
     super.initState();
     homePageService.getData().then((value) {
       setState(() {
+        workouts = value;
         isLoaded = true;
       });
     });
@@ -32,12 +35,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBarWidget(backgroundColor: appBarColor),
-      bottomNavigationBar: BottomBar(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ExerciseListTest()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => TestScreen()));
         },
         child: Icon(Icons.add, size: 30),
       ),
@@ -68,22 +70,30 @@ class _HomePageState extends State<HomePage> {
                       .headline5!
                       .copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              if (isLoaded)
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: homePageService.workouts?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final workout = homePageService.workouts![index];
-                    return WorkoutListTile(
-                      id: workout.id,
-                      name: workout.name,
-                      description: workout.description,
-                      imageUrl: workout.workoutImageUrl,
+              FutureBuilder(
+                future: homePageService.getData(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error loading data'));
+                  } else {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        final workout = snapshot.data[index];
+                        return WorkoutListTile(
+                          id: workout.id,
+                          name: workout.name,
+                          description: workout.description,
+                          imageUrl: workout.workoutImageUrl,
+                        );
+                      },
                     );
-                  },
-                )
-              else
-                const Center(child: CircularProgressIndicator()),
+                  }
+                },
+              )
             ],
           ),
         ),

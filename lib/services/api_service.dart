@@ -18,6 +18,7 @@ class ApiService {
       var decodedBody = utf8.decode(response.bodyBytes);
       return exerciseFromMap(decodedBody);
     }
+    return null;
   }
 
   Future<List<Exercise>?> getExercise(int id) async {
@@ -30,6 +31,7 @@ class ApiService {
       var decodedBody = utf8.decode(response.bodyBytes);
       return exerciseFromMap(decodedBody);
     }
+    return null;
   }
 
   Future<List<Workout>?> getWorkouts() async {
@@ -42,6 +44,7 @@ class ApiService {
       var decodedBody = utf8.decode(response.bodyBytes);
       return workoutFromMap(decodedBody);
     }
+    return null;
   }
 
   Future<List<Workout>?> getWorkout(int id) async {
@@ -54,6 +57,7 @@ class ApiService {
       var decodedBody = utf8.decode(response.bodyBytes);
       return workoutFromMap(decodedBody);
     }
+    return null;
   }
 
   Future<List<WorkoutExercise>?> getWorkoutExercises() async {
@@ -66,6 +70,7 @@ class ApiService {
       var decodedBody = utf8.decode(response.bodyBytes);
       return workoutExerciseFromMap(decodedBody);
     }
+    return null;
   }
 
   Future<List<WorkoutExercise>?> getWorkoutExercise(int id) async {
@@ -78,6 +83,7 @@ class ApiService {
       var decodedBody = utf8.decode(response.bodyBytes);
       return workoutExerciseFromMap(decodedBody);
     }
+    return null;
   }
 
   Future<List<WorkoutExercise>?> getWorkoutExerciseByWorkoutId(
@@ -90,6 +96,64 @@ class ApiService {
     if (response.statusCode == 200) {
       var decodedBody = utf8.decode(response.bodyBytes);
       return workoutExerciseFromMap(decodedBody);
+    }
+    return null;
+  }
+
+  Future<void> postData(Map<String, dynamic> data, String urlTail) async {
+    var headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+
+    var uri = Uri.parse('$apiBaseUrl/$urlTail/');
+    var response = await http.post(
+      uri,
+      headers: headers,
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 201) {
+      print('Data posted successfully!');
+    } else {
+      print('Failed to post data: ${response.statusCode}');
+    }
+  }
+
+  Future<void> putData(
+      Map<String, dynamic> data, String urlTail, String id) async {
+    var headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+
+    var uri = Uri.parse('$apiBaseUrl/$urlTail/?id=$id');
+    var response = await http.put(
+      uri,
+      headers: headers,
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      print('Data updated successfully!');
+    } else {
+      print('Failed to update data: ${response.statusCode}');
+    }
+  }
+
+  Future<void> deleteData(String urlTail, int id) async {
+    var headers = <String, String>{
+      'Content-Type': 'application/json',
+    };
+
+    var uri = Uri.parse('$apiBaseUrl/$urlTail/?id=$id');
+    var response = await http.delete(
+      uri,
+      headers: headers,
+    );
+
+    if (response.statusCode == 204) {
+      print('Data deleted successfully!');
+    } else {
+      print('Failed to delete data: ${response.statusCode}');
     }
   }
 }
