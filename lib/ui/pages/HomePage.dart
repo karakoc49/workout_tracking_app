@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracking_app/services/home_page_service.dart';
-import 'package:workout_tracking_app/ui/screens/AddWorkoutScreen.dart';
 import 'package:workout_tracking_app/ui/widgets/AppBar.dart';
 import 'package:workout_tracking_app/ui/widgets/WorkoutListTile.dart';
 import 'package:workout_tracking_app/utils/constants.dart';
@@ -33,17 +32,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
-      appBar: AppBarWidget(backgroundColor: appBarColor),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryColor,
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddWorkoutScreen()));
-        },
-        child: Icon(Icons.add, size: 30),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      appBar: const AppBarWidget(backgroundColor: appBarColor),
       body: SafeArea(
         child: Column(
           children: [
@@ -53,24 +44,19 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text('Welcome back,',
+                    Text('Welcome back, Haluk!',
                         style: Theme.of(context)
                             .textTheme
-                            .headline4!
+                            .headlineMedium!
                             .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
-                    Text('Get your body changing within 6 weeks',
-                        style: Theme.of(context).textTheme.headline6),
-                    const SizedBox(height: 20),
-                    Text(
-                      '4-day strength program with compound lifts and progressive overload for muscle growth and balanced development.',
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
+                    Text('Get your body changing within weeks',
+                        style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 20),
                     Text('Workouts',
                         style: Theme.of(context)
                             .textTheme
-                            .headline5!
+                            .headlineSmall!
                             .copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 10),
                     FutureBuilder(
@@ -78,9 +64,29 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Center(child: Text('Error loading data'));
+                          return AlertDialog(
+                            title: const Text('Error'),
+                            content: Text(
+                              snapshot.error.toString(),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  homePageService.getData();
+                                },
+                                child: const Text('Try again'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Close'),
+                              ),
+                            ],
+                          );
                         } else {
                           return ListView.builder(
                             physics: NeverScrollableScrollPhysics(),

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 const String apiBaseUrl = "http://10.0.2.2:8000/api";
 // const String apiBaseUrl = "http://192.168.1.158:8000/api";
-// const String apiBaseUrl = "https://workout-tracking-app-backend.onrender.com/api";
+// const String apiBaseUrl =
+//     "https://workout-tracking-app-backend.onrender.com/api";
 
 const Color primaryColor =
     Color(0xFFF56C1FC); // Your primary color (adjust the hex code)

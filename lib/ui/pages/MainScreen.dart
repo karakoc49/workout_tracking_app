@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:workout_tracking_app/utils/constants.dart';
 
+import '../screens/AddWorkoutScreen.dart';
 import 'ExercisesListPage.dart';
 import 'HomePage.dart';
 
@@ -46,6 +48,21 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
+      floatingActionButton: currentIndex == 0
+          ? FloatingActionButton(
+              backgroundColor: primaryColor,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddWorkoutScreen(),
+                  ),
+                );
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

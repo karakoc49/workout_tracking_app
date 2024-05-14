@@ -5,10 +5,11 @@ import 'package:workout_tracking_app/services/workout_detail_screen_service.dart
 import 'package:workout_tracking_app/ui/widgets/AppBar.dart';
 import 'package:workout_tracking_app/ui/widgets/WorkoutExerciseListTile.dart';
 
+import 'EditWorkoutScreen.dart';
+
 class WorkoutDetailScreen extends StatefulWidget {
   final int workoutId;
-  const WorkoutDetailScreen({Key? key, required this.workoutId})
-      : super(key: key);
+  const WorkoutDetailScreen({super.key, required this.workoutId});
 
   @override
   State<WorkoutDetailScreen> createState() => _WorkoutDetailScreenState();
@@ -51,7 +52,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+                end: Alignment.center,
                 colors: [randomColor, Colors.black],
               ),
             ),
@@ -105,6 +106,117 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                          Row(
+                            children: [
+                              PopupMenuButton(
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      child: const Text('Edit'),
+                                      onTap: () {
+                                        workoutDetailScreenService
+                                                    .workout?.first !=
+                                                null
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditWorkoutScreen(
+                                                    workoutName:
+                                                        workoutDetailScreenService
+                                                                .workout
+                                                                ?.first
+                                                                .name ??
+                                                            'Workout Name',
+                                                    workoutDescription:
+                                                        workoutDetailScreenService
+                                                                .workout
+                                                                ?.first
+                                                                .description ??
+                                                            'Workout Description',
+                                                    workoutImageUrl:
+                                                        workoutDetailScreenService
+                                                                .workout
+                                                                ?.first
+                                                                .workoutImageUrl ??
+                                                            'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*',
+                                                  ),
+                                                ),
+                                              )
+                                            : print('Workout is null');
+                                      },
+                                    ),
+                                    PopupMenuItem(
+                                      child: const Text('Delete'),
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Are you sure you want to delete this workout?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    workoutDetailScreenService
+                                                        .deleteWorkout(
+                                                            widget.workoutId)
+                                                        .then(
+                                                            (deletionSuccessful) {
+                                                      if (deletionSuccessful) {
+                                                        Navigator.pop(
+                                                            context); // Close the AlertDialog
+                                                        Navigator.pop(
+                                                            context); // Go back to the previous screen
+                                                      } else {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              title: const Text(
+                                                                  'Error deleting workout. Please try again.'),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child:
+                                                                      const Text(
+                                                                          'Ok'),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                    });
+                                                  },
+                                                  child: const Text('Delete'),
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ];
+                                },
+                                color: Colors.white,
+                                iconColor: Colors.white,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10.0),
                           Text(
                             isLoaded
                                 ? workoutDetailScreenService

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final Color backgroundColor;
-  const AppBarWidget({super.key, required this.backgroundColor});
+  final Widget? leading;
+  const AppBarWidget({super.key, required this.backgroundColor, this.leading});
 
   @override
   State<AppBarWidget> createState() => _AppBarWidgetState();
@@ -15,6 +16,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: widget.leading,
       shadowColor: Colors.lightBlue,
       elevation: 0.0,
       backgroundColor: widget.backgroundColor,

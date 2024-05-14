@@ -48,6 +48,17 @@ class WorkoutDetailScreenService {
     }
   }
 
+  Future<bool> deleteWorkout(int workoutId) async {
+    try {
+      // Delete workout data
+      await ApiService().deleteData('workout', workoutId);
+      return true; // Return true if deletion is successful
+    } catch (e) {
+      print('Error deleting data: $e');
+      return false; // Return false if there is an error
+    }
+  }
+
   final Random _random = Random();
 
   Future<Color> generateRandomColor() async {
