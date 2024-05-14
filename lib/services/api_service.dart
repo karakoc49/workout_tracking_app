@@ -100,7 +100,8 @@ class ApiService {
     return null;
   }
 
-  Future<void> postData(Map<String, dynamic> data, String urlTail) async {
+  Future<Map<String, dynamic>> postData(
+      Map<String, dynamic> data, String urlTail) async {
     var headers = <String, String>{
       'Content-Type': 'application/json',
     };
@@ -114,8 +115,13 @@ class ApiService {
 
     if (response.statusCode == 201) {
       print('Data posted successfully!');
+
+      // Extract and return the response data (including the ID)
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      return responseData;
     } else {
       print('Failed to post data: ${response.statusCode}');
+      throw Exception('Failed to post data: ${response.statusCode}');
     }
   }
 

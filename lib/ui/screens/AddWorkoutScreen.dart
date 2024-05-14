@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:workout_tracking_app/services/add_workout_screen_service.dart';
+import 'package:workout_tracking_app/ui/screens/WorkoutDetailScreen.dart';
+
+import '../../models/Workout.dart';
 
 class AddWorkoutScreen extends StatefulWidget {
   const AddWorkoutScreen({super.key});
@@ -8,6 +12,50 @@ class AddWorkoutScreen extends StatefulWidget {
 }
 
 class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
+  TextEditingController _workoutNameController = TextEditingController();
+  AddWorkoutScreenService _addWorkoutScreenService = AddWorkoutScreenService();
+
+  Future<void> createWorkout(String workoutName) async {
+    // Handle empty workout name string
+    if (workoutName.isEmpty) {
+      return;
+    }
+
+    // Create a new workout
+    Workout workout = Workout(
+      id: 1,
+      name: workoutName,
+      description: 'My workout description',
+      user: 1,
+      workoutImageUrl: '',
+    );
+
+    try {
+      // Add workout to the API and wait for the response
+      Workout createdWorkout =
+          await _addWorkoutScreenService.postWorkoutToApi(workout);
+
+      // Close the screen and navigate to the detail screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              WorkoutDetailScreen(workoutId: createdWorkout.id),
+        ),
+      );
+    } catch (e) {
+      // Handle any errors that occurred during the API request
+      print('Error creating workout: $e');
+      // You can show an error message or take other appropriate action here
+    }
+  }
+
+  @override
+  void dispose() {
+    _workoutNameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +86,7 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: TextFormField(
-                  initialValue: 'My workout',
+                  controller: _workoutNameController,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: 'My workout',
@@ -87,7 +135,8 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // Add workout to the list
+                        String workoutName = _workoutNameController.text.trim();
+                        createWorkout(workoutName);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(

@@ -40,34 +40,36 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       appBar: AppBarWidget(
-        backgroundColor: randomColor,
+        backgroundColor: Colors.transparent,
       ),
-      body: SafeArea(
-        child: Visibility(
-          visible: isLoaded,
-          replacement: const Center(
-            child: CircularProgressIndicator(),
-          ),
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [randomColor, Colors.black],
-                  ),
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    color: Colors.black
-                        .withOpacity(0.1), // Adjust opacity as needed
-                  ),
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [randomColor, Colors.black],
               ),
-              Column(
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                color:
+                    Colors.black.withOpacity(0.1), // Adjust opacity as needed
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Visibility(
+              visible: isLoaded,
+              replacement: const Center(
+                child: CircularProgressIndicator(),
+              ),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
@@ -78,14 +80,20 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                         aspectRatio: 1.0,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
-                          child: Image.network(
-                            isLoaded
-                                ? workoutDetailScreenService
-                                        .workout?.first.workoutImageUrl ??
-                                    'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*'
-                                : 'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*',
-                            fit: BoxFit.cover,
-                          ),
+                          child: isLoaded &&
+                                  workoutDetailScreenService
+                                          .workout?.first.workoutImageUrl !=
+                                      ""
+                              ? Image.network(
+                                  isLoaded
+                                      ? workoutDetailScreenService
+                                              .workout?.first.workoutImageUrl ??
+                                          'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*'
+                                      : 'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*',
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'assets/images/Hands-Clapping-Chaulk-Kettlebell.jpeg'),
                         ),
                       ),
                     ),
@@ -134,9 +142,9 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
