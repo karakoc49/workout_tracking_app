@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracking_app/services/add_workout_screen_service.dart';
 import 'package:workout_tracking_app/ui/screens/WorkoutDetailScreen.dart';
+import 'package:workout_tracking_app/utils/constants.dart';
 
 import '../../models/Workout.dart';
 
@@ -153,9 +154,9 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        backgroundColor: Colors.green, // White text color
+                        backgroundColor: primaryColor, // White text color
                         side: const BorderSide(
-                            color: Colors.green), // Green border color
+                            color: primaryColor), // Green border color
                       ),
                       child: const Padding(
                         padding: EdgeInsets.symmetric(

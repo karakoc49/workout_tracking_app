@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:workout_tracking_app/ui/widgets/AppBar.dart';
 import 'package:workout_tracking_app/utils/responsive_padding.dart';
 
+import '../../services/exercise_list_page_service.dart';
+import '../screens/WorkoutSelectionScreen.dart';
 import '../widgets/ExerciseListTile.dart';
 import '/models/Exercise.dart';
-import '/services/api_service.dart';
 
 final TextEditingController _searchController = TextEditingController();
 
@@ -16,23 +17,46 @@ class ExerciseListPage extends StatefulWidget {
 }
 
 class _ExerciseListPageState extends State<ExerciseListPage> {
-  final apiService = ApiService();
-  List<Exercise>? exercises;
+  ExerciseListPageService exerciseListPageService = ExerciseListPageService();
   var isLoaded = false;
+  List<Exercise>? exercises;
+  List<Exercise> selectedExercises = [];
 
   @override
   void initState() {
     super.initState();
-    getData();
-  }
-
-  getData() async {
-    exercises = await ApiService().getExercises();
-    if (exercises != null) {
+    exerciseListPageService.getData().then((value) {
       setState(() {
+        exercises = value;
         isLoaded = true;
       });
+    });
+  }
+
+  void selectWorkout() {
+    if (selectedExercises.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WorkoutSelectionScreen(
+            selectedExercises: selectedExercises,
+          ),
+        ),
+      );
     }
+  }
+
+  void onSelectExercise(Exercise exercise, bool isSelected) {
+    if (isSelected) {
+      setState(() {
+        selectedExercises.add(exercise);
+      });
+    } else {
+      setState(() {
+        selectedExercises.remove(exercise);
+      });
+    }
+    print("Selected exercises: $selectedExercises");
   }
 
   @override
@@ -71,14 +95,17 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
               child: Expanded(
                 child: ListView.builder(
                   itemCount: exercises?.length,
-                  shrinkWrap: true,
+                  // shrinkWrap: true,
                   itemBuilder: (context, index) {
                     final exercise = exercises![index];
                     return ExerciseListTile(
-                        name: exercise.name,
-                        description: exercise.description,
-                        muscleGroup: exercise.muscleGroup,
-                        gifUrl: exercise.gifUrl);
+                      name: exercise.name,
+                      description: exercise.description,
+                      muscleGroup: exercise.muscleGroup,
+                      gifUrl: exercise.gifUrl,
+                      onSelect: (isSelected) =>
+                          onSelectExercise(exercise, isSelected),
+                    );
                   },
                 ),
               ),
@@ -86,6 +113,12 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
           ],
         ),
       ),
+      floatingActionButton: selectedExercises.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: selectWorkout,
+              child: Icon(Icons.send),
+            )
+          : null,
     );
   }
 }

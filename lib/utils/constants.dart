@@ -14,3 +14,7 @@ const Color backgroundColor =
 const Color passiveColor =
     Color(0xFFFA3A3A3); // Passive color for inactive buttons, etc.
 const Color appBarColor = Color(0xFFFAEC6CF); // App Bar Color
+
+const defaultSetNumber = 4;
+const defaultRepNumber = 12;
+const defaultWeight = 10;

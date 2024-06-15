@@ -126,7 +126,7 @@ class ApiService {
   }
 
   Future<void> putData(
-      Map<String, dynamic> data, String urlTail, String id) async {
+      Map<String, dynamic> data, String urlTail, int id) async {
     var headers = <String, String>{
       'Content-Type': 'application/json',
     };

@@ -25,7 +25,6 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   @override
   void initState() {
     super.initState();
-    print(widget.workoutId);
     workoutDetailScreenService.getData(widget.workoutId).then((value) {
       setState(() {
         isLoaded = true;
@@ -86,11 +85,9 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                                           .workout?.first.workoutImageUrl !=
                                       ""
                               ? Image.network(
-                                  isLoaded
-                                      ? workoutDetailScreenService
-                                              .workout?.first.workoutImageUrl ??
-                                          'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*'
-                                      : 'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*',
+                                  workoutDetailScreenService
+                                          .workout?.first.workoutImageUrl ??
+                                      'https://hips.hearstapps.com/hmg-prod/images/unknown-african-american-athlete-lifting-dumbbell-royalty-free-image-1669374545.jpg?crop=0.90609xw:1xh;center,top&resize=1200:*',
                                   fit: BoxFit.cover,
                                 )
                               : Image.asset(
@@ -122,6 +119,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       EditWorkoutScreen(
+                                                    workoutId: widget.workoutId,
                                                     workoutName:
                                                         workoutDetailScreenService
                                                                 .workout
@@ -232,18 +230,20 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                           Expanded(
                             child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: workoutDetailScreenService
-                                  .workoutExercises!.length,
+                              itemCount:
+                                  workoutDetailScreenService.mergedData.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final workoutExercise =
                                     workoutDetailScreenService
-                                        .workoutExercises![index];
+                                        .mergedData[index];
                                 return WorkoutExerciseListTile(
-                                  name: workoutExercise.exerciseData.name,
-                                  gifUrl: workoutExercise.exerciseData.gifUrl,
-                                  reps: workoutExercise.reps,
-                                  sets: workoutExercise.sets,
-                                  weight: workoutExercise.weight,
+                                  name: workoutExercise['exercise_data']
+                                      ['name'],
+                                  gifUrl: workoutExercise['exercise_data']
+                                      ['gif_url'],
+                                  reps: workoutExercise['reps'],
+                                  sets: workoutExercise['sets'],
+                                  weight: workoutExercise['weight'],
                                 );
                               },
                             ),

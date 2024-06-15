@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import '../models/Exercise.dart';
 import '../models/Workout.dart';
 import '../models/WorkoutExercise.dart';
 import 'api_service.dart';
@@ -10,48 +9,68 @@ class WorkoutDetailScreenService {
   ApiService apiService = ApiService();
 
   List<WorkoutExercise>? workoutExercises = [];
-  List<Workout>? workout = [];
-  List<Exercise>? exercises = [];
+  List<Workout>? workout;
+  List<Map<String, dynamic>> mergedData = [];
   var isLoaded = false;
 
-  getData(workoutId) async {
+  Future<void> getData(int workoutId) async {
+    // Fetch workout exercises by workoutId
     workoutExercises =
-        await ApiService().getWorkoutExerciseByWorkoutId(workoutId);
+        await apiService.getWorkoutExerciseByWorkoutId(workoutId);
 
     if (workoutExercises == null) {
       // Handle case where workoutExercises is null
-      return null;
+      return;
     }
 
+    // Iterate through each workout exercise
     for (var workoutExercise in workoutExercises!) {
-      // Assuming workoutExercise includes necessary exercise data
-      var exercise = workoutExercise.exerciseData;
+      // Fetch exercise data using the exercise ID from workoutExercise
+      var exercises = await apiService.getExercise(workoutExercise.exercise);
 
-      // You can directly use the exercise data from workoutExercise
-      print("Exercise Name: ${exercise.name}");
-      print("Exercise Description: ${exercise.description}");
-      print("Exercise Image URL: ${exercise.gifUrl}");
+      // Assuming getExercise returns a list, we take the first element
+      if (exercises != null && exercises.isNotEmpty) {
+        var exercise = exercises.first;
 
-      // You can access other fields of workoutExercise as well
-      print("Sets: ${workoutExercise.sets}");
-      print("Reps: ${workoutExercise.reps}");
-      print("Weight: ${workoutExercise.weight}");
+        // Create a merged map
+        var mergedItem = {
+          'id': workoutExercise.id,
+          'workout': workoutExercise.workout,
+          'exercise': workoutExercise.exercise,
+          'sets': workoutExercise.sets,
+          'reps': workoutExercise.reps,
+          'weight': workoutExercise.weight,
+          'exercise_data': {
+            'id': exercise.id,
+            'name': exercise.name,
+            'description': exercise.description,
+            'muscle_group': exercise.muscleGroup,
+            'gif_url': exercise.gifUrl,
+          },
+        };
 
-      // Add exercise to the exercises list if needed
-      exercises!.add(exercise);
+        // Add merged item to the list
+        mergedData.add(mergedItem);
+      }
     }
 
-    workout = await ApiService().getWorkout(workoutId);
+    // Fetch workout details
+    workout = await apiService.getWorkout(workoutId);
 
     if (workoutExercises != null) {
       isLoaded = true;
+    }
+
+    // Print the merged data for debugging
+    for (var item in mergedData) {
+      print(item);
     }
   }
 
   Future<bool> deleteWorkout(int workoutId) async {
     try {
       // Delete workout data
-      await ApiService().deleteData('workout', workoutId);
+      await apiService.deleteData('workout', workoutId);
       return true; // Return true if deletion is successful
     } catch (e) {
       print('Error deleting data: $e');

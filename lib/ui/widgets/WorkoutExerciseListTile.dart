@@ -82,8 +82,8 @@ class _WorkoutExerciseListTileState extends State<WorkoutExerciseListTile> {
           ),
         ],
       ),
-      trailing: Icon(Icons.play_circle_filled,
-          color: Colors.white), // Playback control
+      trailing:
+          Icon(Icons.chevron_right, color: Colors.white), // Playback control
       onTap: () {
         // Play the selected track
       },
