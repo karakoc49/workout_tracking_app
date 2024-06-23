@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:workout_tracking_app/ui/pages/ExercisesListPage.dart';
 import 'package:workout_tracking_app/utils/constants.dart';
 
 import '../screens/AddWorkoutScreen.dart';
-import 'ExercisesListPage.dart';
 import 'HomePage.dart';
 
 class MainScreen extends StatefulWidget {
@@ -17,7 +17,8 @@ class _MainScreenState extends State<MainScreen> {
   final pages = [
     // Add your screens here
     HomePage(),
-    ExerciseListPage()
+    ExerciseListPage(),
+    // ExerciseListPage()
   ];
 
   @override

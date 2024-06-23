@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../screens/EditWorkoutExerciseScreen.dart';
+
 class WorkoutExerciseListTile extends StatefulWidget {
+  final int id;
+  final int workoutId;
+  final int exerciseId;
   final String name;
   final String gifUrl;
   final int reps;
@@ -9,6 +14,9 @@ class WorkoutExerciseListTile extends StatefulWidget {
 
   const WorkoutExerciseListTile({
     Key? key,
+    required this.id,
+    required this.workoutId,
+    required this.exerciseId,
     required this.name,
     required this.gifUrl,
     required this.reps,
@@ -85,7 +93,20 @@ class _WorkoutExerciseListTileState extends State<WorkoutExerciseListTile> {
       trailing:
           Icon(Icons.chevron_right, color: Colors.white), // Playback control
       onTap: () {
-        // Play the selected track
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => EditWorkoutExerciseScreen(
+              workoutExerciseId: widget.id,
+              workoutId: widget.workoutId,
+              exerciseId: widget.exerciseId,
+              name: widget.name,
+              gifUrl: widget.gifUrl,
+              sets: widget.sets,
+              reps: widget.reps,
+              weight: widget.weight,
+            ),
+          ),
+        );
       },
     );
   }

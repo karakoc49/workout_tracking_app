@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:workout_tracking_app/ui/pages/MainScreen.dart';
 
+import 'utils/constants.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await updateApiBaseUrl();
@@ -16,8 +18,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const MainScreen(),
-      theme:
-          ThemeData(fontFamily: 'Montserrat', primaryColor: Colors.lightBlue),
+      theme: ThemeData(
+        fontFamily: 'Montserrat',
+        primaryColor: primaryColor,
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.black,
+          ),
+        ),
+      ),
     );
   }
 }

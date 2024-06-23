@@ -7,8 +7,6 @@ import '../screens/WorkoutSelectionScreen.dart';
 import '../widgets/ExerciseListTile.dart';
 import '/models/Exercise.dart';
 
-final TextEditingController _searchController = TextEditingController();
-
 class ExerciseListPage extends StatefulWidget {
   const ExerciseListPage({super.key});
 
@@ -17,9 +15,11 @@ class ExerciseListPage extends StatefulWidget {
 }
 
 class _ExerciseListPageState extends State<ExerciseListPage> {
+  final TextEditingController _searchController = TextEditingController();
   ExerciseListPageService exerciseListPageService = ExerciseListPageService();
   var isLoaded = false;
   List<Exercise>? exercises;
+  List<Exercise> filteredExercises = [];
   List<Exercise> selectedExercises = [];
 
   @override
@@ -28,8 +28,29 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
     exerciseListPageService.getData().then((value) {
       setState(() {
         exercises = value;
+        filteredExercises = value; // Initially show all exercises
         isLoaded = true;
       });
+    });
+    _searchController.addListener(_filterExercises);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterExercises);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterExercises() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      filteredExercises = exercises!
+          .where((exercise) =>
+              exercise.name.toLowerCase().contains(query) ||
+              exercise.description.toLowerCase().contains(query) ||
+              exercise.muscleGroup.toLowerCase().contains(query))
+          .toList();
     });
   }
 
@@ -81,6 +102,12 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
                   labelText: "Search",
                   hintText: "Search",
                   prefixIcon: Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                    },
+                  ),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(25.0)))),
             ),
@@ -94,10 +121,9 @@ class _ExerciseListPageState extends State<ExerciseListPage> {
               ),
               child: Expanded(
                 child: ListView.builder(
-                  itemCount: exercises?.length,
-                  // shrinkWrap: true,
+                  itemCount: filteredExercises.length,
                   itemBuilder: (context, index) {
-                    final exercise = exercises![index];
+                    final exercise = filteredExercises[index];
                     return ExerciseListTile(
                       name: exercise.name,
                       description: exercise.description,

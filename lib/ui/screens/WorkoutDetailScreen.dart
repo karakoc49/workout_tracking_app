@@ -20,7 +20,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       WorkoutDetailScreenService();
 
   var isLoaded = false;
-  var randomColor = Colors.black;
+  // var randomColor = Colors.black;
 
   @override
   void initState() {
@@ -30,11 +30,11 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
         isLoaded = true;
       });
     });
-    workoutDetailScreenService.generateRandomColor().then((value) {
-      setState(() {
-        randomColor = value;
-      });
-    });
+    // workoutDetailScreenService.generateRandomColor().then((value) {
+    //   setState(() {
+    //     randomColor = value;
+    //   });
+    // });
   }
 
   @override
@@ -42,24 +42,24 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: AppBarWidget(
+      appBar: const AppBarWidget(
         backgroundColor: Colors.transparent,
       ),
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.center,
-                colors: [randomColor, Colors.black],
+                colors: [Colors.blueAccent, Colors.black],
               ),
             ),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 color:
-                    Colors.black.withOpacity(0.1), // Adjust opacity as needed
+                    Colors.black.withOpacity(0.3), // Adjust opacity as needed
               ),
             ),
           ),
@@ -75,7 +75,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   Expanded(
                     flex: 4, // Workout image takes 40% of the screen
                     child: Container(
-                      padding: EdgeInsets.all(48.0),
+                      padding: const EdgeInsets.all(48.0),
                       child: AspectRatio(
                         aspectRatio: 1.0,
                         child: ClipRRect(
@@ -221,7 +221,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                                         .workout?.first.name ??
                                     'Workout Name'
                                 : 'Workout Name',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -237,6 +237,9 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                                     workoutDetailScreenService
                                         .mergedData[index];
                                 return WorkoutExerciseListTile(
+                                  id: workoutExercise['id'],
+                                  workoutId: workoutExercise['workout'],
+                                  exerciseId: workoutExercise['exercise'],
                                   name: workoutExercise['exercise_data']
                                       ['name'],
                                   gifUrl: workoutExercise['exercise_data']

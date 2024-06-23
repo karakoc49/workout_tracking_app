@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final Color backgroundColor;
   final Widget? leading;
-  const AppBarWidget({super.key, required this.backgroundColor, this.leading});
+  final bool? centerTitle;
+  final Widget? title;
+  const AppBarWidget(
+      {super.key,
+      required this.backgroundColor,
+      this.leading,
+      this.title,
+      this.centerTitle});
 
   @override
   State<AppBarWidget> createState() => _AppBarWidgetState();
@@ -17,6 +24,8 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   Widget build(BuildContext context) {
     return AppBar(
       leading: widget.leading,
+      centerTitle: widget.centerTitle ?? false,
+      title: widget.title,
       shadowColor: Colors.lightBlue,
       elevation: 0.0,
       backgroundColor: widget.backgroundColor,
